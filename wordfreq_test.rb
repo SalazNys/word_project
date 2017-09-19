@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 require_relative 'wordfreq'
-
+require 'pry'
 def fullpath(filename)
   File.absolute_path(File.join(File.dirname(__FILE__)), filename)
 end
@@ -32,13 +32,13 @@ class WordfreqTest < Minitest::Test
     wf = Wordfreq.new fullpath('seneca_falls.txt')
     top_words = wf.top_words(5)
     assert_equal [
-      ["her", 33], ["all", 12], ["which", 12], ["they", 7], ["their", 7]
+      ['her', 33], ['all', 12], ['which', 12], ['she', 7], ['their', 7]
     ], top_words
 
     wf = Wordfreq.new fullpath('emancipation_proclamation.txt')
     top_words = wf.top_words(4)
     assert_equal [
-      ["states", 20], ["united", 14], ["day", 8], ["shall", 7]
+      ['states', 20], ['united', 14], ['day', 8], ['shall', 7]
     ], top_words
   end
 
@@ -47,13 +47,13 @@ class WordfreqTest < Minitest::Test
     her | 33 *********************************
     all | 12 ************
   which | 12 ************
-   they | 7  *******
-  their | 7  *******
     she | 7  *******
-   this | 6  ******
-   them | 6  ******
-  women | 6  ******
+  their | 7  *******
+   they | 7  *******
+  right | 6  ******
  rights | 6  ******
+   such | 6  ******
+   them | 6  ******
 EOF
 
     wf = Wordfreq.new fullpath('seneca_falls.txt')

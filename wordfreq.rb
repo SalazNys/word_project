@@ -1,53 +1,41 @@
+
 class Wordfreq
   STOP_WORDS = ['a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
     'has', 'he', 'i', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the', 'to',
     'were', 'will', 'with']
 
   def initialize(filename)
-    contents = File.read(filename).downcase.gsub("--", " ").gsub(/[^a-z0-9\s]/i, "")
-    words = contents.split(" ") - STOP_WORDS
-    @words_frequency = words.each_with_object(Hash.new(0)) { |word, counts| counts[word] += 1  }.sort_by { |word, frequency| frequency }.reverse.to_h
-    top_words(3)
+    @contents = File.read(filename).downcase.gsub("--", " ").gsub(/[^a-z0-9\s]/i, "")
+    @words = @contents.split(" ").reject{|e| STOP_WORDS.include? e}
+    @frequencies = Hash.new(0)
+    @words.each do |word|
+    @frequencies[word] += 1
+    end
+    return @frequencies
   end
 
   def frequency(word)
-    if frequencies.has_key?(word)
-      frequencies[word]
+    if @frequencies.has_key?(word)
+      @frequencies[word]
     else
       0
     end
   end
 
-  # This line, writes the commented out code below FOR us and
-  # is generally placed the top of the file (e.g. line 2)
-  attr_reader :frequencies
-  # def frequencies
-  #   @frequencies
-  # end
+
+  def frequencies
+    @frequencies
+  end
 
   def top_words(number)
-    @words_frequency.take(number)
+    @frequencies.sort { |a, b| [b[1], a[0]] <=> [a[1], b[0]] }[0..(number - 1)]
+
   end
 
   def print_report
-    report_words = @words_frequency.take(10).to_h
-
-    max_word_length = 0
-    max_digits_frequency = report_words.values.first.to_s.length
-
-    report_words.each { |word_info|
-      unless word_info[0].length < max_word_length
-        max_word_length = word_info[0].length
-      end
-    }
-
-    report_words.each { |word_info|
-      padded_word = word_info[0].rjust(max_word_length + 1)
-      padded_frequency = word_info[1].to_s.rjust(max_digits_frequency)
-      stars = "*" * word_info[1]
-
-      puts "#{padded_word} | #{padded_frequency} #{stars}"
-    }
+    top_words(10).each do |x, y|
+      puts "#{x} |".rjust(9) + " #{y}".ljust(4) + "*" * y
+    end
   end
 end
 
